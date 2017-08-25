@@ -8,6 +8,7 @@
 
 @import UIKit;
 
+NS_SWIFT_NAME(StateButton)
 @interface AXStateButton : UIButton
 
 + (nullable instancetype)button;

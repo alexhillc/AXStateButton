@@ -39,7 +39,12 @@ typedef void(^AXStateBlock)();
 
 #pragma mark - Initialization
 + (instancetype)button {
-    return [[self class] buttonWithType:UIButtonTypeCustom];
+    return [super buttonWithType:UIButtonTypeCustom];
+}
+
++ (instancetype)buttonWithType:(UIButtonType)buttonType {
+    [NSException raise:@"AXUnsupportedFactoryMethodException" format:@"Use +[AXStateButton button] instead."];
+    return nil;
 }
 
 - (instancetype)init {
