@@ -1,0 +1,19 @@
+PODS:
+  - AXStateButton (1.0.0)
+  - Reveal-SDK (10)
+
+DEPENDENCIES:
+  - AXStateButton (from `../AXStateButton.podspec`)
+  - Reveal-SDK
+
+EXTERNAL SOURCES:
+  AXStateButton:
+    :path: "../AXStateButton.podspec"
+
+SPEC CHECKSUMS:
+  AXStateButton: 8fdfc286305f17b1bdf527e204b55a8a31408b24
+  Reveal-SDK: 7869ddf1f902cabbb07a1f0dd06bd25861a126f7
+
+PODFILE CHECKSUM: 845d02584b4ff6e9a057c3fc84a76051a5ff6f17
+
+COCOAPODS: 1.2.1
