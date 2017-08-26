@@ -98,10 +98,21 @@ typedef void(^AXStateBlock)();
     self.stateDictionary = [stateDictionary copy];
 }
 
+- (void)didMoveToWindow {
+    [super didMoveToWindow];
+    
+    if (self.window && self.superview) {
+        BOOL animateControlStateChanges = self.animateControlStateChanges;
+        self.animateControlStateChanges = NO;
+        [self updateButtonState];
+        self.animateControlStateChanges = animateControlStateChanges;
+    }
+}
+
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         BOOL animateControlStateChanges = self.animateControlStateChanges;
         self.animateControlStateChanges = NO;
         [self updateButtonState];
@@ -179,7 +190,7 @@ typedef void(^AXStateBlock)();
         [self.stateDictionary[AXStateButtonTintColorKey] removeObjectForKey:@(controlState)];
     }
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -195,7 +206,7 @@ typedef void(^AXStateBlock)();
         [self.stateDictionary[AXStateButtonBackgroundColorKey] removeObjectForKey:@(controlState)];
     }
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -207,7 +218,7 @@ typedef void(^AXStateBlock)();
 - (void)setAlpha:(CGFloat)alpha forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonAlphaKey][@(controlState)] = @(alpha);
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -219,7 +230,7 @@ typedef void(^AXStateBlock)();
 - (void)setCornerRadius:(CGFloat)cornerRadius forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonCornerRadiusKey][@(controlState)] = @(cornerRadius);
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -235,7 +246,7 @@ typedef void(^AXStateBlock)();
         [self.stateDictionary[AXStateButtonBorderColorKey] removeObjectForKey:@(controlState)];
     }
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -247,7 +258,7 @@ typedef void(^AXStateBlock)();
 - (void)setBorderWidth:(CGFloat)borderWidth forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonBorderWidthKey][@(controlState)] = @(borderWidth);
 
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -259,7 +270,7 @@ typedef void(^AXStateBlock)();
 - (void)setTransformRotationX:(CGFloat)radians forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonTransformRotationXKey][@(controlState)] = @(radians);
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -271,7 +282,7 @@ typedef void(^AXStateBlock)();
 - (void)setTransformRotationY:(CGFloat)radians forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonTransformRotationYKey][@(controlState)] = @(radians);
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -283,7 +294,7 @@ typedef void(^AXStateBlock)();
 - (void)setTransformRotationZ:(CGFloat)radians forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonTransformRotationZKey][@(controlState)] = @(radians);
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -295,7 +306,7 @@ typedef void(^AXStateBlock)();
 - (void)setTransformScale:(CGFloat)scale forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonTransformScaleKey][@(controlState)] = @(scale);
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -311,7 +322,7 @@ typedef void(^AXStateBlock)();
         [self.stateDictionary[AXStateButtonShadowColorKey] removeObjectForKey:@(controlState)];
     }
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -323,7 +334,7 @@ typedef void(^AXStateBlock)();
 - (void)setShadowOpacity:(CGFloat)shadowOpacity forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonShadowOpacityKey][@(controlState)] = @(shadowOpacity);
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -335,7 +346,7 @@ typedef void(^AXStateBlock)();
 - (void)setShadowOffset:(CGSize)shadowOffset forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonShadowOffsetKey][@(controlState)] = [NSValue valueWithCGSize:shadowOffset];
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -347,7 +358,7 @@ typedef void(^AXStateBlock)();
 - (void)setShadowRadius:(CGFloat)shadowRadius forState:(UIControlState)controlState {
     self.stateDictionary[AXStateButtonShadowRadiusKey][@(controlState)] = @(shadowRadius);
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }
@@ -363,7 +374,7 @@ typedef void(^AXStateBlock)();
         [self.stateDictionary[AXStateButtonShadowPathKey] removeObjectForKey:@(controlState)];
     }
     
-    if (self.superview) {
+    if (self.window && self.superview) {
         [self updateButtonState];
     }
 }

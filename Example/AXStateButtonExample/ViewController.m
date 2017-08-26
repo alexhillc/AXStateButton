@@ -12,6 +12,7 @@
 @interface ViewController ()
 
 @property AXStateButton *materialButton;
+@property AXStateButton *tryAgainButton;
 @property AXStateButton *loadingButton;
 
 @end
@@ -27,100 +28,131 @@
     self.materialButton = [self createMaterialButton];
     [self.view addSubview:self.materialButton];
     
+    // Try again button
+    self.tryAgainButton = [self createTryAgainButton];
+    [self.view addSubview:self.tryAgainButton];
+    
     // Sample loading button
     self.loadingButton = [self createLoadingButton];
     [self.view addSubview:self.loadingButton];
 }
 
 - (AXStateButton *)createMaterialButton {
-    AXStateButton *materialButton = [AXStateButton button];
-    materialButton.controlStateAnimationDuration = 0.1;
-    [materialButton addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchUpInside];
+    AXStateButton *button = [AXStateButton button];
+    button.controlStateAnimationDuration = 0.1;
+    [button addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchUpInside];
     
-    [materialButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"+"
-                                                                       attributes:@{
-                                                                                    NSFontAttributeName: [UIFont boldSystemFontOfSize:28],
-                                                                                    NSForegroundColorAttributeName: [UIColor whiteColor]
-                                                                                    }]
-                              forState:UIControlStateNormal];
-    [materialButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 4, 0)];
+    [button setAttributedTitle:[[NSAttributedString alloc] initWithString:@"+"
+                                                               attributes:@{
+                                                                            NSFontAttributeName: [UIFont boldSystemFontOfSize:28],
+                                                                            NSForegroundColorAttributeName: [UIColor whiteColor]
+                                                                            }]
+                      forState:UIControlStateNormal];
+    [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 4, 0)];
     
-    [materialButton setTransformRotationZ:0 forState:UIControlStateNormal];
-//    [materialButton setTransformRotationZ:M_PI_4 forState:UIControlStateHighlighted];
+    [button setTransformRotationZ:0 forState:UIControlStateNormal];
+//    [button setTransformRotationZ:M_PI_4 forState:UIControlStateHighlighted];
     
-    [materialButton setTransformScale:1.0 forState:UIControlStateNormal];
-    [materialButton setTransformScale:0.95 forState:UIControlStateHighlighted];
+    [button setTransformScale:1.0 forState:UIControlStateNormal];
+    [button setTransformScale:0.95 forState:UIControlStateHighlighted];
     
-    [materialButton setShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [materialButton setShadowOpacity:0.2 forState:UIControlStateNormal];
-    [materialButton setShadowOffset:CGSizeMake(2, 2) forState:UIControlStateNormal];
-    [materialButton setShadowOpacity:0.4 forState:UIControlStateHighlighted];
+    [button setShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button setShadowOpacity:0.2 forState:UIControlStateNormal];
+    [button setShadowOffset:CGSizeMake(2, 2) forState:UIControlStateNormal];
+    [button setShadowOpacity:0.4 forState:UIControlStateHighlighted];
     
-    [materialButton setBackgroundColor:[UIColor redColor] forState:UIControlStateNormal];
-    [materialButton setBackgroundColor:[UIColor colorWithRed:216. / 255. green:0.0 blue:0.0 alpha:1.0]
-                              forState:UIControlStateHighlighted];
+    [button setBackgroundColor:[UIColor redColor] forState:UIControlStateNormal];
+    [button setBackgroundColor:[UIColor colorWithRed:216. / 255. green:0.0 blue:0.0 alpha:1.0]
+                      forState:UIControlStateHighlighted];
     
     CGSize buttonSize = CGSizeMake(56, 56);
-    [materialButton setCornerRadius:buttonSize.height / 2 forState:UIControlStateNormal];
-    materialButton.frame = (CGRect){ CGPointZero, buttonSize };
+    [button setCornerRadius:buttonSize.height / 2 forState:UIControlStateNormal];
+    button.frame = (CGRect){ CGPointZero, buttonSize };
     
-    return materialButton;
+    return button;
+}
+
+- (AXStateButton *)createTryAgainButton {
+    AXStateButton *button = [AXStateButton button];
+//    [button addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [button setTitle:@"Try again" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    
+    [button setAlpha:1.0 forState:UIControlStateNormal];
+    [button setAlpha:0.7 forState:UIControlStateHighlighted];
+    
+    [button setTransformScale:1.0 forState:UIControlStateNormal];
+    [button setTransformScale:0.95 forState:UIControlStateHighlighted];
+    
+    [button setBorderWidth:1.0 forState:UIControlStateNormal];
+    [button setBorderColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    
+    [button setBackgroundColor:[UIColor clearColor] forState:UIControlStateNormal];
+    
+    CGSize buttonSize = CGSizeMake(90, 30);
+    [button setCornerRadius:6.0 forState:UIControlStateNormal];
+    button.frame = (CGRect){ CGPointZero, buttonSize };
+    
+    return button;
 }
 
 - (AXStateButton *)createLoadingButton {
-    AXStateButton *loadingButton = [AXStateButton button];
-    loadingButton.controlStateAnimationDuration = 0.1;
-    [loadingButton addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchUpInside];
+    AXStateButton *button = [AXStateButton button];
+    [button addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchUpInside];
     
-    [loadingButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Load"
-                                                                      attributes:@{
-                                                                                   NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
-                                                                                   NSForegroundColorAttributeName: [UIColor whiteColor]
-                                                                                   }]
-                             forState:UIControlStateNormal];
-    [loadingButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Loading..."
-                                                                      attributes:@{
-                                                                                   NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
-                                                                                   NSForegroundColorAttributeName: [UIColor whiteColor]
-                                                                                   }]
-                             forState:UIControlStateDisabled];
+    [button setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Load"
+                                                               attributes:@{
+                                                                            NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
+                                                                            NSForegroundColorAttributeName: [UIColor whiteColor]
+                                                                            }]
+                      forState:UIControlStateNormal];
+    [button setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Loading..."
+                                                               attributes:@{
+                                                                            NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
+                                                                            NSForegroundColorAttributeName: [UIColor whiteColor]
+                                                                            }]
+                      forState:UIControlStateDisabled];
     
-    [loadingButton setShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [loadingButton setShadowOpacity:0.2 forState:UIControlStateNormal];
-    [loadingButton setShadowOffset:CGSizeMake(2, 2) forState:UIControlStateNormal];
-    [loadingButton setShadowOpacity:0.4 forState:UIControlStateHighlighted];
+    [button setShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button setShadowOpacity:0.2 forState:UIControlStateNormal];
+    [button setShadowOffset:CGSizeMake(2, 2) forState:UIControlStateNormal];
+    [button setShadowOpacity:0.4 forState:UIControlStateHighlighted];
     
-    [loadingButton setTransformRotationX:0 forState:UIControlStateNormal];
-    [loadingButton setTransformRotationX:M_PI forState:UIControlStateDisabled];
+    [button setTransformRotationX:0 forState:UIControlStateNormal];
+    [button setTransformRotationX:M_PI forState:UIControlStateDisabled];
     
-    [loadingButton setTransformRotationY:0 forState:UIControlStateNormal];
-    [loadingButton setTransformRotationY:M_PI forState:UIControlStateDisabled];
+    [button setTransformRotationY:0 forState:UIControlStateNormal];
+    [button setTransformRotationY:M_PI forState:UIControlStateDisabled];
     
-    [loadingButton setTransformRotationZ:0 forState:UIControlStateNormal];
-    [loadingButton setTransformRotationZ:M_PI forState:UIControlStateDisabled];
+    [button setTransformRotationZ:0 forState:UIControlStateNormal];
+    [button setTransformRotationZ:M_PI forState:UIControlStateDisabled];
     
-    [loadingButton setBackgroundColor:[UIColor purpleColor] forState:UIControlStateNormal];
-    [loadingButton setBackgroundColor:[UIColor colorWithRed:102. / 255. green:0.0 blue:102. / 255. alpha:1.0]
-                             forState:UIControlStateHighlighted];
-    [loadingButton setBackgroundColor:[UIColor grayColor] forState:UIControlStateDisabled];
+    [button setBackgroundColor:[UIColor purpleColor] forState:UIControlStateNormal];
+    [button setBackgroundColor:[UIColor colorWithRed:102. / 255. green:0.0 blue:102. / 255. alpha:1.0]
+                      forState:UIControlStateHighlighted];
+    [button setBackgroundColor:[UIColor grayColor] forState:UIControlStateDisabled];
     
     CGSize buttonSize = CGSizeMake(100, 50);
-    [loadingButton setCornerRadius:buttonSize.height / 2 forState:UIControlStateNormal];
-    [loadingButton setCornerRadius:0 forState:UIControlStateDisabled];
-    loadingButton.frame = (CGRect){ CGPointZero, buttonSize };
+    [button setCornerRadius:buttonSize.height / 2 forState:UIControlStateNormal];
+    [button setCornerRadius:0 forState:UIControlStateDisabled];
+    button.frame = (CGRect){ CGPointZero, buttonSize };
     
-    return loadingButton;
+    return button;
 }
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
     CGPoint materialButtonCenter = self.view.center;
-    materialButtonCenter.y -= 50;
+    materialButtonCenter.y -= 100;
     self.materialButton.center = materialButtonCenter;
     
+    CGPoint tryAgainButtonCenter = self.view.center;
+    self.tryAgainButton.center = tryAgainButtonCenter;
+    
     CGPoint loadingButtonCenter = self.view.center;
-    loadingButtonCenter.y += 50;
+    loadingButtonCenter.y += 100;
     self.loadingButton.center = loadingButtonCenter;
 }
 
