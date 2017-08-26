@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name            = "AXStateButton"
-  s.version         = "1.0.0"
+  s.version         = "1.0.1"
   s.license         = { :type  => 'MIT', :file => 'LICENSE.md' }
   s.summary         = "A simple UIButton subclass that allows for extensive button state customization."
   s.homepage        = "https://github.com/alexhillc/AXStateButton"
