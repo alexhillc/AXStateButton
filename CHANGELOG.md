@@ -1,3 +1,7 @@
+# 1.1.0
+- **[NEW]** -[AXStateButton setTitleAlpha:forState:] and getter
+- **[NEW]** -[AXStateButton setImageAlpha:forState:] and getter
+
 # 1.0.1
 - Adds a window check when setting button attributes, as to not incur more immediate work than necessary
 
