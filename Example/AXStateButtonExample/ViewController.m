@@ -39,31 +39,34 @@
 
 - (AXStateButton *)createMaterialButton {
     AXStateButton *button = [AXStateButton button];
-    button.controlStateAnimationDuration = 0.1;
     [button addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchUpInside];
     
-    [button setAttributedTitle:[[NSAttributedString alloc] initWithString:@"+"
-                                                               attributes:@{
-                                                                            NSFontAttributeName: [UIFont boldSystemFontOfSize:28],
-                                                                            NSForegroundColorAttributeName: [UIColor whiteColor]
-                                                                            }]
-                      forState:UIControlStateNormal];
-    [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 4, 0)];
+    [button setImage:[UIImage imageNamed:@"layers"] forState:UIControlStateNormal];
+    [button setTintColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [button setTintColor:[UIColor cyanColor] forState:UIControlStateSelected];
+    [button setTintColor:[UIColor cyanColor] forState:UIControlStateHighlighted | UIControlStateSelected];
+    [button setImageAlpha:1.0 forState:UIControlStateNormal];
+    [button setImageAlpha:0.8 forState:UIControlStateHighlighted];
+    [button setImageAlpha:0.8 forState:UIControlStateHighlighted | UIControlStateSelected];
     
     [button setTransformRotationZ:0 forState:UIControlStateNormal];
 //    [button setTransformRotationZ:M_PI_4 forState:UIControlStateHighlighted];
     
     [button setTransformScale:1.0 forState:UIControlStateNormal];
-    [button setTransformScale:0.95 forState:UIControlStateHighlighted];
+//    [button setTransformScale:0.95 forState:UIControlStateHighlighted];
+//    [button setTransformScale:0.95 forState:UIControlStateHighlighted | UIControlStateSelected];
     
     [button setShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [button setShadowOpacity:0.2 forState:UIControlStateNormal];
     [button setShadowOffset:CGSizeMake(2, 2) forState:UIControlStateNormal];
+    [button setShadowOpacity:0.2 forState:UIControlStateNormal];
     [button setShadowOpacity:0.4 forState:UIControlStateHighlighted];
+    [button setShadowOpacity:0.4 forState:UIControlStateHighlighted | UIControlStateSelected];
     
     [button setBackgroundColor:[UIColor redColor] forState:UIControlStateNormal];
     [button setBackgroundColor:[UIColor colorWithRed:216. / 255. green:0.0 blue:0.0 alpha:1.0]
                       forState:UIControlStateHighlighted];
+    [button setBackgroundColor:[UIColor colorWithRed:216. / 255. green:0.0 blue:0.0 alpha:1.0]
+                      forState:UIControlStateHighlighted | UIControlStateSelected];
     
     CGSize buttonSize = CGSizeMake(56, 56);
     [button setCornerRadius:buttonSize.height / 2 forState:UIControlStateNormal];
@@ -113,6 +116,9 @@
                                                                             NSForegroundColorAttributeName: [UIColor whiteColor]
                                                                             }]
                       forState:UIControlStateDisabled];
+    
+    [button setTitleAlpha:1.0 forState:UIControlStateNormal];
+    [button setTitleAlpha:0.8 forState:UIControlStateHighlighted];
     
     [button setShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
     [button setShadowOpacity:0.2 forState:UIControlStateNormal];

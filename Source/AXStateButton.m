@@ -11,6 +11,8 @@
 static NSString *_Nonnull AXStateButtonTintColorKey            = @"AXStateButtonTintColor";
 static NSString *_Nonnull AXStateButtonBackgroundColorKey      = @"AXStateButtonBackgroundColor";
 static NSString *_Nonnull AXStateButtonAlphaKey                = @"AXStateButtonAlpha";
+static NSString *_Nonnull AXStateButtonTitleAlphaKey           = @"AXStateButtonTitleAlpha";
+static NSString *_Nonnull AXStateButtonImageAlphaKey           = @"AXStateButtonImageAlpha";
 static NSString *_Nonnull AXStateButtonCornerRadiusKey         = @"AXStateButtonCornerRadius";
 static NSString *_Nonnull AXStateButtonBorderColorKey          = @"AXStateButtonBorderColor";
 static NSString *_Nonnull AXStateButtonBorderWidthKey          = @"AXStateButtonBorderWidth";
@@ -24,9 +26,16 @@ static NSString *_Nonnull AXStateButtonShadowOffsetKey         = @"AXStateButton
 static NSString *_Nonnull AXStateButtonShadowRadiusKey         = @"AXStateButtonShadowRadius";
 static NSString *_Nonnull AXStateButtonShadowPathKey           = @"AXStateButtonShadowPath";
 
-static NSString *_Nonnull AXAnimationKey   = @"AXAnimation";
-static NSString *_Nonnull AXStateBlockKey  = @"AXStateBlock";
+static NSString *_Nonnull AXAnimationDictionaryKey    = @"AXAnimationDictionary";
+static NSString *_Nonnull AXStateBlockKey             = @"AXStateBlock";
 
+static NSString *_Nonnull AXAnimationDictionaryAnimationKey               = @"AXAnimation";
+static NSString *_Nonnull AXAnimationDictionaryAnimationLayerKeyPathKey   = @"AXAnimationLayerKeyPath";
+
+static NSString *_Nonnull AXAnimationDefaultLayerKeyPath = @"layer";
+
+typedef NSDictionary<NSString *, id> * AXAnimationDictionary;
+typedef NSMutableDictionary<NSString *, NSArray<CAAnimation *> *> * AXAnimationKeyPathDictionary;
 typedef void(^AXStateBlock)();
 
 @interface AXStateButton ()
@@ -45,14 +54,6 @@ typedef void(^AXStateBlock)();
 + (instancetype)buttonWithType:(UIButtonType)buttonType {
     [NSException raise:@"AXUnsupportedFactoryMethodException" format:@"Use +[AXStateButton button] instead."];
     return nil;
-}
-
-- (instancetype)init {
-    if (self = [super init]) {
-        [self commonInit];
-    }
-    
-    return self;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -75,9 +76,14 @@ typedef void(^AXStateBlock)();
     self.animateControlStateChanges = YES;
     self.controlStateAnimationDuration = 0.2;
     
+    self.adjustsImageWhenHighlighted = NO;
+    self.adjustsImageWhenDisabled = NO;
+    
     NSArray<NSString *> *keys = @[ AXStateButtonTintColorKey,
                                    AXStateButtonBackgroundColorKey,
                                    AXStateButtonAlphaKey,
+                                   AXStateButtonTitleAlphaKey,
+                                   AXStateButtonImageAlphaKey,
                                    AXStateButtonCornerRadiusKey,
                                    AXStateButtonBorderColorKey,
                                    AXStateButtonBorderWidthKey,
@@ -153,13 +159,25 @@ typedef void(^AXStateBlock)();
 
 - (void)updateButtonState {
     NSArray<NSDictionary<NSString *, id> *> *stateChanges = [self stateChangesForCurrentState];
-    NSMutableArray<CAAnimation *> *animations = [NSMutableArray array];
+    AXAnimationKeyPathDictionary animationsDictionary = [NSMutableDictionary dictionary];
     NSMutableArray<AXStateBlock> *stateBlocks = [NSMutableArray array];
     
     for (NSDictionary<NSString *, id> *stateChange in stateChanges) {
-        CAAnimation *animation = stateChange[AXAnimationKey];
-        if (animation) {
+        AXAnimationDictionary animationDictionary = stateChange[AXAnimationDictionaryKey];
+        if (animationDictionary) {
+            CAAnimation *animation = animationDictionary[AXAnimationDictionaryAnimationKey];
+            if (!animation) {
+                continue;
+            }
+            
+            NSString *keyPath = animationDictionary[AXAnimationDictionaryAnimationLayerKeyPathKey] ?: AXAnimationDefaultLayerKeyPath;
+            if (!animationsDictionary[keyPath]) {
+                animationsDictionary[keyPath] = [NSArray array];
+            }
+            
+            NSMutableArray<CAAnimation *> *animations = [animationsDictionary[keyPath] mutableCopy];
             [animations addObject:animation];
+            animationsDictionary[keyPath] = [animations copy];
         }
         
         AXStateBlock stateBlock = stateChange[AXStateBlockKey];
@@ -168,13 +186,15 @@ typedef void(^AXStateBlock)();
         }
     }
     
-    if (animations.count > 0) {
+    for (NSString *keyPath in [animationsDictionary allKeys]) {
+        NSArray<CAAnimation *> *animations = animationsDictionary[keyPath];
+        
         CAAnimationGroup *group = [CAAnimationGroup animation];
         group.duration = self.controlStateAnimationDuration;
-        group.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+        group.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         group.animations = animations;
         
-        [self.layer addAnimation:group forKey:@"AXGroupAnim"];
+        [[self valueForKeyPath:keyPath] addAnimation:group forKey:@"AXGroupAnim"];
     }
     
     for (AXStateBlock stateBlock in stateBlocks) {
@@ -225,6 +245,30 @@ typedef void(^AXStateBlock)();
 
 - (CGFloat)alphaForState:(UIControlState)controlState {
     return [self.stateDictionary[AXStateButtonAlphaKey][@(controlState)] floatValue];
+}
+
+- (void)setTitleAlpha:(CGFloat)alpha forState:(UIControlState)controlState {
+    self.stateDictionary[AXStateButtonTitleAlphaKey][@(controlState)] = @(alpha);
+    
+    if (self.window && self.superview) {
+        [self updateButtonState];
+    }
+}
+
+- (CGFloat)titleAlphaForState:(UIControlState)controlState {
+    return [self.stateDictionary[AXStateButtonTitleAlphaKey][@(controlState)] floatValue];
+}
+
+- (void)setImageAlpha:(CGFloat)alpha forState:(UIControlState)controlState {
+    self.stateDictionary[AXStateButtonImageAlphaKey][@(controlState)] = @(alpha);
+    
+    if (self.window && self.superview) {
+        [self updateButtonState];
+    }
+}
+
+- (CGFloat)imageAlphaForState:(UIControlState)controlState {
+    return [self.stateDictionary[AXStateButtonImageAlphaKey][@(controlState)] floatValue];
 }
 
 - (void)setCornerRadius:(CGFloat)cornerRadius forState:(UIControlState)controlState {
@@ -416,6 +460,10 @@ typedef void(^AXStateBlock)();
             changes = [self backgroundColorStateChangesForState:state];
         } else if (propertyKey == AXStateButtonAlphaKey) {
             changes = [self alphaStateChangesForState:state];
+        } else if (propertyKey == AXStateButtonTitleAlphaKey) {
+            changes = [self titleAlphaStateChangesForState:state];
+        } else if (propertyKey == AXStateButtonImageAlphaKey) {
+            changes = [self imageAlphaStateChangesForState:state];
         } else if (propertyKey == AXStateButtonCornerRadiusKey) {
             changes = [self cornerRadiusStateChangesForState:state];
         } else if (propertyKey == AXStateButtonBorderColorKey) {
@@ -478,7 +526,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -508,12 +556,74 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
         AXStateBlock block = ^() {
             weakSelf.layer.opacity = [weakSelf alphaForState:controlState];
+        };
+        
+        return @{ AXStateBlockKey: block };
+    }
+}
+
+- (NSDictionary<NSString *, id> *)titleAlphaStateChangesForState:(UIControlState)controlState {
+    __weak typeof(self) weakSelf = self;
+    
+    if (self.animateControlStateChanges) {
+        NSString *opacityKeyPath = @"opacity";
+        CGFloat fromValue = [[self.titleLabel.layer.presentationLayer valueForKeyPath:opacityKeyPath] floatValue];
+        CGFloat toValue = [self titleAlphaForState:controlState];
+        
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:opacityKeyPath];
+        animation.fillMode = kCAFillModeForwards;
+        animation.fromValue = @(fromValue);
+        animation.toValue = @(toValue);
+        
+        AXStateBlock block = ^() {
+            weakSelf.titleLabel.layer.opacity = toValue;
+        };
+        
+        return @{
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation,
+                                              AXAnimationDictionaryAnimationLayerKeyPathKey: @"titleLabel.layer" },
+                 AXStateBlockKey: block
+                 };
+    } else {
+        AXStateBlock block = ^() {
+            weakSelf.titleLabel.layer.opacity = [weakSelf titleAlphaForState:controlState];
+        };
+        
+        return @{ AXStateBlockKey: block };
+    }
+}
+
+- (NSDictionary<NSString *, id> *)imageAlphaStateChangesForState:(UIControlState)controlState {
+    __weak typeof(self) weakSelf = self;
+    
+    if (self.animateControlStateChanges) {
+        NSString *opacityKeyPath = @"opacity";
+        CGFloat fromValue = [[self.imageView.layer.presentationLayer valueForKeyPath:opacityKeyPath] floatValue];
+        CGFloat toValue = [self imageAlphaForState:controlState];
+        
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:opacityKeyPath];
+        animation.fillMode = kCAFillModeForwards;
+        animation.fromValue = @(fromValue);
+        animation.toValue = @(toValue);
+        
+        AXStateBlock block = ^() {
+            weakSelf.imageView.layer.opacity = toValue;
+        };
+        
+        return @{
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation,
+                                              AXAnimationDictionaryAnimationLayerKeyPathKey: @"imageView.layer" },
+                 AXStateBlockKey: block
+                 };
+    } else {
+        AXStateBlock block = ^() {
+            weakSelf.imageView.layer.opacity = [weakSelf imageAlphaForState:controlState];
         };
         
         return @{ AXStateBlockKey: block };
@@ -538,7 +648,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -568,7 +678,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -598,7 +708,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -629,7 +739,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -660,7 +770,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -691,7 +801,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -722,7 +832,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -752,7 +862,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -782,7 +892,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -812,7 +922,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -842,7 +952,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {
@@ -872,7 +982,7 @@ typedef void(^AXStateBlock)();
         };
         
         return @{
-                 AXAnimationKey: animation,
+                 AXAnimationDictionaryKey: @{ AXAnimationDictionaryAnimationKey: animation },
                  AXStateBlockKey: block
                  };
     } else {

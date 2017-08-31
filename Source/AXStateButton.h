@@ -64,6 +64,38 @@ NS_SWIFT_NAME(StateButton)
 - (void)setAlpha:(CGFloat)alpha forState:(UIControlState)controlState;
 
 /**
+ Change the button title's alpha based on its state.
+ 
+ @param alpha The desired alpha.
+ @param controlState The button's control state.
+ */
+- (void)setTitleAlpha:(CGFloat)alpha forState:(UIControlState)controlState;
+
+/**
+ Retrieve the button title's alpha for a state.
+ 
+ @param controlState The button's control state.
+ @return The button title's alpha.
+ */
+- (CGFloat)titleAlphaForState:(UIControlState)controlState;
+
+/**
+ Change the button image's alpha based on its state.
+ 
+ @param alpha The desired alpha.
+ @param controlState The button's control state.
+ */
+- (void)setImageAlpha:(CGFloat)alpha forState:(UIControlState)controlState;
+
+/**
+ Retrieve the button image's alpha for a state.
+ 
+ @param controlState The button's control state.
+ @return The button image's alpha.
+ */
+- (CGFloat)imageAlphaForState:(UIControlState)controlState;
+
+/**
  Retrieve the button's alpha for a state.
  
  @param controlState The button's control state.
