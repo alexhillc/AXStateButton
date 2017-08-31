@@ -43,6 +43,11 @@ You can also adjust the animation duration of your state transitions:
 button.controlStateAnimationDuration = 0.1;
 ```
 
+On top of that, you can change the timing function used when animating control state changes:
+```objc
+button.controlStateAnimationTimingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+```
+
 Or, you can disable animations all together:
 ```objc
 button.animateControlStateChanges = NO;
