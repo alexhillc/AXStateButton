@@ -1,3 +1,6 @@
+# 1.1.1
+- Exposes timing function property to be used for control transition animations
+
 # 1.1.0
 - **[NEW]** -[AXStateButton setTitleAlpha:forState:] and getter
 - **[NEW]** -[AXStateButton setImageAlpha:forState:] and getter
