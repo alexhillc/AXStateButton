@@ -24,6 +24,12 @@ NS_SWIFT_NAME(StateButton)
 @property NSTimeInterval controlStateAnimationDuration;
 
 /**
+ The timing function used during the transition animation. 
+ Defaults to `-[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]`.
+ */
+@property (nonnull) CAMediaTimingFunction *controlStateAnimationTimingFunction;
+
+/**
  Change the button's tint color based on its state.
 
  @param tintColor The desired tint color.

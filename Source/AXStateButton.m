@@ -75,6 +75,7 @@ typedef void(^AXStateBlock)();
 - (void)commonInit {
     self.animateControlStateChanges = YES;
     self.controlStateAnimationDuration = 0.2;
+    self.controlStateAnimationTimingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     
     self.adjustsImageWhenHighlighted = NO;
     self.adjustsImageWhenDisabled = NO;
@@ -191,7 +192,7 @@ typedef void(^AXStateBlock)();
         
         CAAnimationGroup *group = [CAAnimationGroup animation];
         group.duration = self.controlStateAnimationDuration;
-        group.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        group.timingFunction = self.controlStateAnimationTimingFunction;
         group.animations = animations;
         
         [[self valueForKeyPath:keyPath] addAnimation:group forKey:@"AXGroupAnim"];
@@ -517,9 +518,8 @@ typedef void(^AXStateBlock)();
         CGColorRef toValue = [self backgroundColorForState:controlState].CGColor;
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:backgroundColorKeyPath];
-        animation.fillMode = kCAFillModeForwards;
-        animation.fromValue = (__bridge id _Nullable)(fromValue);
-        animation.toValue = (__bridge id _Nullable)(toValue);
+        animation.fromValue = (__bridge id _Nullable)fromValue;
+        animation.toValue = (__bridge id _Nullable)toValue;
         
         AXStateBlock block = ^() {
             weakSelf.layer.backgroundColor = toValue;
@@ -547,7 +547,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self alphaForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:opacityKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -577,7 +576,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self titleAlphaForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:opacityKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -608,7 +606,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self imageAlphaForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:opacityKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -639,7 +636,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self cornerRadiusForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:cornerRadiusKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -669,7 +665,6 @@ typedef void(^AXStateBlock)();
         CGColorRef toValue = [self borderColorForState:controlState].CGColor;
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:borderColorKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = (__bridge id _Nullable)(fromValue);
         animation.toValue = (__bridge id _Nullable)(toValue);
         
@@ -699,7 +694,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self borderWidthForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:borderWidthKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -730,7 +724,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self transformRotationXForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:xRotationKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -761,7 +754,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self transformRotationYForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:yRotationKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -792,7 +784,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self transformRotationZForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:zRotationKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -823,7 +814,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self transformScaleForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:scaleKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -853,9 +843,8 @@ typedef void(^AXStateBlock)();
         CGColorRef toValue = [self shadowColorForState:controlState].CGColor;
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:shadowColorKeyPath];
-        animation.fillMode = kCAFillModeForwards;
-        animation.fromValue = (__bridge id _Nullable)(fromValue);
-        animation.toValue = (__bridge id _Nullable)(toValue);
+        animation.fromValue = (__bridge id _Nullable)fromValue;
+        animation.toValue = (__bridge id _Nullable)toValue;
         
         AXStateBlock block = ^() {
             weakSelf.layer.shadowColor = toValue;
@@ -883,7 +872,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self shadowOpacityForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:shadowOpacityKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -913,7 +901,6 @@ typedef void(^AXStateBlock)();
         CGSize toValue = [self shadowOffsetForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:shadowOffsetKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = [NSValue valueWithCGSize:fromValue];
         animation.toValue = [NSValue valueWithCGSize:toValue];
         
@@ -943,7 +930,6 @@ typedef void(^AXStateBlock)();
         CGFloat toValue = [self shadowRadiusForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:shadowRadiusKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = @(fromValue);
         animation.toValue = @(toValue);
         
@@ -973,7 +959,6 @@ typedef void(^AXStateBlock)();
         UIBezierPath *toValue = [self shadowPathForState:controlState];
         
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:shadowPathKeyPath];
-        animation.fillMode = kCAFillModeForwards;
         animation.fromValue = fromValue;
         animation.toValue = toValue;
         
