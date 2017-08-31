@@ -21,6 +21,8 @@ AXStateButton *button = [AXStateButton button];
 * Tint color
 * Background color
 * Alpha
+* Title alpha
+* Image alpha
 * Corner radius
 * Border color
 * Border width
