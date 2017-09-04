@@ -1,3 +1,6 @@
+# 1.1.2
+- Removes animation from setValue:forState methods
+
 # 1.1.1
 - Exposes timing function property to be used for control transition animations
 
