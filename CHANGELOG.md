@@ -1,3 +1,6 @@
+# 1.1.3
+- Support for iOS 8
+
 # 1.1.2
 - Removes animation from setValue:forState methods
 
