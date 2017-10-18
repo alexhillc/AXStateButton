@@ -36,7 +36,7 @@ static NSString *_Nonnull AXAnimationDefaultLayerKeyPath = @"layer";
 
 typedef NSDictionary<NSString *, id> * AXAnimationDictionary;
 typedef NSMutableDictionary<NSString *, NSArray<CAAnimation *> *> * AXAnimationKeyPathDictionary;
-typedef void(^AXStateBlock)();
+typedef void(^AXStateBlock)(void);
 
 @interface AXStateButton ()
 
