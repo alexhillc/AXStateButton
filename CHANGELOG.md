@@ -1,3 +1,6 @@
+# 1.1.4
+- **[FIX]** Xcode 9 strict prototype warning
+
 # 1.1.3
 - Support for iOS 8
 
