@@ -8,6 +8,12 @@
 
 @import UIKit;
 
+//! Project version number for AXStateButton.
+FOUNDATION_EXPORT double AXStateButtonVersionNumber;
+
+//! Project version string for AXStateButton.
+FOUNDATION_EXPORT const unsigned char AXStateButtonVersionString[];
+
 NS_SWIFT_NAME(StateButton)
 @interface AXStateButton : UIButton
 
